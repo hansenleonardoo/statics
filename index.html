@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Kalkulator Keseimbangan</title>
+<style>
+body { font-family: Arial; margin:20px; }
+input { margin:5px; }
+table, th, td { border:1px solid #444; border-collapse: collapse; padding:6px; }
+</style>
+<script>
+function addRow(){
+    let table=document.getElementById("forceTable");
+    let row=table.insertRow(-1);
+    row.innerHTML=`<td><input type='number' step='0.01' class='F'></td>
+                   <td><input type='number' step='0.01' class='ang'></td>
+                   <td><input type='number' step='0.01' class='x'></td>
+                   <td><input type='number' step='0.01' class='y'></td>`;
+}
+function calculate(){
+    let F=document.getElementsByClassName("F");
+    let ang=document.getElementsByClassName("ang");
+    let xs=document.getElementsByClassName("x");
+    let ys=document.getElementsByClassName("y");
+
+    let sumFx=0, sumFy=0, sumM=0;
+
+    for(let i=0;i<F.length;i++){
+        let Fi=parseFloat(F[i].value)||0;
+        let a=parseFloat(ang[i].value)||0;
+        let x=parseFloat(xs[i].value)||0;
+        let y=parseFloat(ys[i].value)||0;
+
+        let rad=a*Math.PI/180;
+        let Fx=Fi*Math.cos(rad);
+        let Fy=Fi*Math.sin(rad);
+        let M=x*Fy - y*Fx;
+
+        sumFx+=Fx;
+        sumFy+=Fy;
+        sumM+=M;
+    }
+
+    document.getElementById("outFx").innerText=sumFx.toFixed(3);
+    document.getElementById("outFy").innerText=sumFy.toFixed(3);
+    document.getElementById("outM").innerText=sumM.toFixed(3);
+
+    let balance = Math.abs(sumFx)<1e-6 && Math.abs(sumFy)<1e-6 && Math.abs(sumM)<1e-6;
+    document.getElementById("status").innerText = balance ? 
+        "Sistem dalam keadaan SEIMBANG" : "Sistem TIDAK seimbang";
+}
+</script>
+</head>
+<body>
+
+<h2>Kalkulator Keseimbangan Gaya</h2>
+
+<button onclick="addRow()">Tambah Gaya</button>
+<table id="forceTable">
+<tr><th>Gaya (N)</th><th>Sudut (deg)</th><th>Posisi x</th><th>Posisi y</th></tr>
+<tr>
+<td><input type="number" step="0.01" class="F"></td>
+<td><input type="number" step="0.01" class="ang"></td>
+<td><input type="number" step="0.01" class="x"></td>
+<td><input type="number" step="0.01" class="y"></td>
+</tr>
+</table>
+
+<br>
+<button onclick="calculate()">Hitung</button>
+
+<h3>Hasil</h3>
+<p>∑Fx = <span id="outFx">0</span></p>
+<p>∑Fy = <span id="outFy">0</span></p>
+<p>∑M = <span id="outM">0</span></p>
+<h3 id="status"></h3>
+
+</body>
+</html>
